@@ -1,0 +1,23 @@
+{
+  "name": "@quick-qui/data-provider",
+  "version": "1.0.0",
+  "description": "some utils for data-provider defined by react-admin",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "ra-data-fakerest": "^2.6.0",
+    "react": "^16.9.0",
+    "react-admin": "^2.9.6",
+    "react-dom": "^16.9.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  }
+}
