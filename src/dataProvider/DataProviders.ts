@@ -1,3 +1,7 @@
+import fakeDataProvider from './fake-data';
+
+
+
 class NotCovered extends Error {
     status = 700
     message = 'NotCovered'
@@ -43,6 +47,10 @@ export function forResource(resource: string | string[] , dataProvider: DataProv
             throw e
         }
     }
+}
+
+export function fake(json:any) : DataProvider{
+    return fakeDataProvider(json)
 }
 
 
