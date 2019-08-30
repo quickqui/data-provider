@@ -9,9 +9,9 @@
       "dom"
     ],
     "noImplicitAny": false,
-    // "declaration": true,
+    "declaration": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowJs": true
+    // "allowJs": true
   }
 }
