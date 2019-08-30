@@ -12,6 +12,7 @@
     "declaration": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "module": "CommonJS"
     // "allowJs": true
   }
 }
