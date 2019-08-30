@@ -1,4 +1,4 @@
-import * as FakeRest from 'fakerest';
+import FakeRest from 'fakerest';
 import {
     GET_LIST,
     GET_ONE,
