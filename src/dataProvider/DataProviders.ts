@@ -35,7 +35,7 @@ export function chain(a: DataProvider, b: DataProvider): DataProvider {
 }
 
 
-export function forResource(resource: string | string[] , dataProvider: DataProvider): DataProvider {
+export function forResource(resource: string | string[], dataProvider: DataProvider): DataProvider {
     return async (fetchType: string, re: string, params: DataProviderParams) => {
         const ra: string[] = [resource].flat()
         if (!ra.includes(re)) {
@@ -49,11 +49,18 @@ export function forResource(resource: string | string[] , dataProvider: DataProv
     }
 }
 
-export function fake(json:any) : DataProvider{
+export function fake(json: any): DataProvider {
     return fakeDataProvider(json)
 }
-
-
+export function wrap(json: Promise<any>): Promise<DataProvider> {
+    return json.then(_ => fake(_))
+}
+export function asyncWrap(json: Promise<any>): DataProvider {
+    return async (type: string, resource: string, params: DataProviderParams) => {
+        const data = await json
+        return fake(data)(type, resource, params)
+    }
+}
 
 
 

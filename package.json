@@ -8,7 +8,11 @@
     "build": "tsc",
     "test": "jest"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickqui/data-provider.git"
+  },
+  "author": "nielinjie",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.18",

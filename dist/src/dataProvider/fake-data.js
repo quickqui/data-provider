@@ -1,16 +1,5 @@
 import * as FakeRest from 'fakerest';
-import {
-    GET_LIST,
-    GET_ONE,
-    GET_MANY,
-    GET_MANY_REFERENCE,
-    CREATE,
-    UPDATE,
-    UPDATE_MANY,
-    DELETE,
-    DELETE_MANY,
-} from './DataProviders';
-
+import { GET_LIST, GET_ONE, GET_MANY, GET_MANY_REFERENCE, CREATE, UPDATE, UPDATE_MANY, DELETE, DELETE_MANY, } from './DataProviders';
 /* eslint-disable no-console */
 function log(type, resource, params, response) {
     if (console.group) {
@@ -18,12 +7,12 @@ function log(type, resource, params, response) {
         console.groupCollapsed(type, resource, JSON.stringify(params));
         console.log(response);
         console.groupEnd();
-    } else {
+    }
+    else {
         console.log('FakeRest request ', type, resource, params);
         console.log('FakeRest response', response);
     }
 }
-
 /**
  * Respond to react-admin data queries using a local JavaScript object
  *
@@ -48,7 +37,6 @@ export default (data, loggingEnabled = false) => {
     // if (window) {
     //     window.restServer = restServer; // give way to update data in the console
     // }
-
     function getResponse(type, resource, params) {
         switch (type) {
             case GET_LIST: {
@@ -98,11 +86,9 @@ export default (data, loggingEnabled = false) => {
                     }),
                 };
             case UPDATE_MANY:
-                params.ids.forEach(id =>
-                    restServer.updateOne(resource, id, {
-                        ...params.data,
-                    })
-                );
+                params.ids.forEach(id => restServer.updateOne(resource, id, {
+                    ...params.data,
+                }));
                 return { data: params.ids };
             case CREATE:
                 return {
@@ -117,7 +103,6 @@ export default (data, loggingEnabled = false) => {
                 return false;
         }
     }
-
     /**
      * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
      * @param {String} resource Name of the resource to fetch, e.g. 'posts'
@@ -127,20 +112,17 @@ export default (data, loggingEnabled = false) => {
     return (type, resource, params) => {
         const collection = restServer.getCollection(resource);
         if (!collection) {
-            return new Promise((_, reject) =>
-                reject(new Error(`Undefined collection "${resource}"`))
-            );
+            return new Promise((_, reject) => reject(new Error(`Undefined collection "${resource}"`)));
         }
         let response;
         try {
             response = getResponse(type, resource, params);
-        } catch (error) {
+        }
+        catch (error) {
             return new Promise((_, reject) => reject(error));
         }
         if (response === false) {
-            return new Promise((_, reject) =>
-                reject(new Error(`Unsupported fetch action type ${type}`))
-            );
+            return new Promise((_, reject) => reject(new Error(`Unsupported fetch action type ${type}`)));
         }
         if (loggingEnabled) {
             log(type, resource, params, response);
@@ -148,3 +130,4 @@ export default (data, loggingEnabled = false) => {
         return new Promise(resolve => resolve(response));
     };
 };
+//# sourceMappingURL=fake-data.js.map
