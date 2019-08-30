@@ -9,7 +9,7 @@ import {
     UPDATE_MANY,
     DELETE,
     DELETE_MANY,
-} from './DataProviders';
+} from './dataFetchActions';
 
 /* eslint-disable no-console */
 function log(type, resource, params, response) {
