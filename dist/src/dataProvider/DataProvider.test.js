@@ -41,4 +41,27 @@ test('data provider chain', async () => {
         expect(e).not.toBeUndefined();
     }
 });
+test('object merge', () => {
+    const a = { a: 1, b: 2 };
+    const b = { b: 3 };
+    const c = { ...a, ...b };
+    expect(c.b).toBe(3);
+    expect(c.a).toBe(1);
+    const d = { b: 4, ...b };
+    expect(d.b).toBe(3);
+    const e = { ...b, b: 4 };
+    expect(e.b).toBe(4);
+});
+test('contact', () => {
+    const a = [1, 2, 3];
+    const b = [4, 5];
+    const c = [...a, ...b];
+    expect(c).toHaveLength(5);
+    const d = [a, ...b];
+    expect(d).toHaveLength(3);
+    expect(d[0]).toHaveLength(3);
+    const e = [undefined];
+    const f = [...a, ...e];
+    expect(f).toHaveLength(4);
+});
 //# sourceMappingURL=DataProvider.test.js.map

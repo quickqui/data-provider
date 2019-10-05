@@ -5,5 +5,6 @@ export declare type DataProvider = (fetchType: string, resource: string, params:
 export declare function chain(a: DataProvider, b: DataProvider): DataProvider;
 export declare function forResource(resource: string | string[], dataProvider: DataProvider): DataProvider;
 export declare function fake(json: any): DataProvider;
+export declare function fakeForFunction(jsonFun: () => any): DataProvider;
 export declare function wrap(json: Promise<any>): Promise<DataProvider>;
 export declare function asyncWrap(json: Promise<any>): DataProvider;

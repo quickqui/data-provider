@@ -45,6 +45,13 @@ function fake(json) {
     return fake_data_1.default(json);
 }
 exports.fake = fake;
+function fakeForFunction(jsonFun) {
+    return async (type, resource, params) => {
+        const data = jsonFun();
+        return fake(data)(type, resource, params);
+    };
+}
+exports.fakeForFunction = fakeForFunction;
 function wrap(json) {
     return json.then(_ => fake(_));
 }

@@ -52,6 +52,14 @@ export function forResource(resource: string | string[], dataProvider: DataProvi
 export function fake(json: any): DataProvider {
     return fakeDataProvider(json)
 }
+
+export function fakeForFunction(jsonFun: () => any): DataProvider {
+    return async (type: string, resource: string, params: DataProviderParams) => {
+        const data = jsonFun()
+        return fake(data)(type, resource, params)
+    }
+}
+
 export function wrap(json: Promise<any>): Promise<DataProvider> {
     return json.then(_ => fake(_))
 }
