@@ -21,7 +21,10 @@ class NotCovered extends Error {
     }
 }
 
-export let logEnabled = false
+ let logEnabled = false
+ export function setLogEnabled(enabled: boolean) {
+     logEnabled = enabled
+ }
 
 export type DataProviderParams = { [key: string]: any }
 

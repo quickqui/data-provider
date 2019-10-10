@@ -1,4 +1,4 @@
-export declare let logEnabled: boolean;
+export declare function setLogEnabled(enabled: boolean): void;
 export declare type DataProviderParams = {
     [key: string]: any;
 };

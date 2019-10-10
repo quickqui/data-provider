@@ -24,7 +24,11 @@ class NotCovered extends Error {
         this.message = 'NotCovered - ' + me;
     }
 }
-exports.logEnabled = false;
+let logEnabled = false;
+function setLogEnabled(enabled) {
+    logEnabled = enabled;
+}
+exports.setLogEnabled = setLogEnabled;
 function chain(a, b) {
     return async (fetchType, resource, params) => {
         if (!a)
@@ -59,7 +63,7 @@ function forResource(resource, dataProvider) {
 }
 exports.forResource = forResource;
 function fake(json) {
-    return fake_data_1.default(json, exports.logEnabled);
+    return fake_data_1.default(json, logEnabled);
 }
 exports.fake = fake;
 function fakeForFunction(jsonFun) {
