@@ -36,7 +36,7 @@ export type DataProvider = (
 
 
 
-export function chain(a: DataProvider, b: DataProvider): DataProvider {
+export function chain(a: DataProvider| undefined, b: DataProvider|undefined): DataProvider {
     return async (fetchType: string, resource: string, params: DataProviderParams) => {
         if(!a) return b;
         if(!b) return a;
