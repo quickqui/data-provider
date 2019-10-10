@@ -1,6 +1,7 @@
 import fakeDataProvider from './fake-data';
 
 function log(type, resource, params, response) {
+    if(!logEnabled) return 
     if (console.group) {
         // Better logging in Chrome
         console.groupCollapsed(type, resource, JSON.stringify(params));
@@ -41,12 +42,19 @@ export function chain(a: DataProvider| undefined, b: DataProvider|undefined): Da
         if(!a) return b;
         if(!b) return a;
         try {
-            return await a(fetchType, resource, params)
+            const rea =  await a(fetchType, resource, params)
+            log(fetchType,resource,params,rea)
+            return rea
         } catch (e) {
-            if (e.status === 700)
-                return b(fetchType, resource, params)
-            else
+            if (e.status === 700){
+                const reb = await b(fetchType, resource, params)
+                log(fetchType,resource,params,reb)
+                return reb
+            }
+            else{
+                console.error(e)
                 throw e
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fake_data_1 = __importDefault(require("./fake-data"));
 function log(type, resource, params, response) {
+    if (!logEnabled)
+        return;
     if (console.group) {
         // Better logging in Chrome
         console.groupCollapsed(type, resource, JSON.stringify(params));
@@ -36,13 +38,20 @@ function chain(a, b) {
         if (!b)
             return a;
         try {
-            return await a(fetchType, resource, params);
+            const rea = await a(fetchType, resource, params);
+            log(fetchType, resource, params, rea);
+            return rea;
         }
         catch (e) {
-            if (e.status === 700)
-                return b(fetchType, resource, params);
-            else
+            if (e.status === 700) {
+                const reb = await b(fetchType, resource, params);
+                log(fetchType, resource, params, reb);
+                return reb;
+            }
+            else {
+                console.error(e);
                 throw e;
+            }
         }
     };
 }
