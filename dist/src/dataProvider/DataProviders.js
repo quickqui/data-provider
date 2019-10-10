@@ -78,6 +78,9 @@ exports.fake = fake;
 function fakeForFunction(jsonFun) {
     return async (type, resource, params) => {
         const data = jsonFun();
+        if (logEnabled) {
+            console.log(data);
+        }
         return fake(data)(type, resource, params);
     };
 }
