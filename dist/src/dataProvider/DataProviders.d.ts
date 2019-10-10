@@ -1,3 +1,4 @@
+export declare let logEnabled: boolean;
 export declare type DataProviderParams = {
     [key: string]: any;
 };

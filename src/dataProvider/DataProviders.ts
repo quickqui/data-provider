@@ -1,6 +1,16 @@
 import fakeDataProvider from './fake-data';
 
-
+function log(type, resource, params, response) {
+    if (console.group) {
+        // Better logging in Chrome
+        console.groupCollapsed(type, resource, JSON.stringify(params));
+        console.log(response);
+        console.groupEnd();
+    } else {
+        console.log('FakeRest request ', type, resource, params);
+        console.log('FakeRest response', response);
+    }
+}
 
 class NotCovered extends Error {
     status = 700
@@ -10,6 +20,8 @@ class NotCovered extends Error {
         this.message = 'NotCovered - ' + me
     }
 }
+
+export let logEnabled = false
 
 export type DataProviderParams = { [key: string]: any }
 
@@ -23,6 +35,8 @@ export type DataProvider = (
 
 export function chain(a: DataProvider, b: DataProvider): DataProvider {
     return async (fetchType: string, resource: string, params: DataProviderParams) => {
+        if(!a) return b;
+        if(!b) return a;
         try {
             return await a(fetchType, resource, params)
         } catch (e) {
@@ -50,7 +64,7 @@ export function forResource(resource: string | string[], dataProvider: DataProvi
 }
 
 export function fake(json: any): DataProvider {
-    return fakeDataProvider(json)
+    return fakeDataProvider(json,logEnabled)
 }
 
 export function fakeForFunction(jsonFun: () => any): DataProvider {
