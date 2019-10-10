@@ -128,7 +128,7 @@ export default (data, loggingEnabled = false) => {
         const collection = restServer.getCollection(resource);
         if (!collection) {
             return new Promise((_, reject) =>
-                reject(new Error(`Undefined collection "${resource}"`))
+                reject(new Error(`Undefined collection "${resource}", (don't set promises as fake data)`))
             );
         }
         let response;

@@ -81,9 +81,6 @@ export function fake(json: any): DataProvider {
 export function fakeForFunction(jsonFun: () => any): DataProvider {
     return async (type: string, resource: string, params: DataProviderParams) => {
         const data = jsonFun()
-        if(logEnabled){
-            console.log(data)
-        }
         return fake(data)(type, resource, params)
     }
 }
