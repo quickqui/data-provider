@@ -60,6 +60,13 @@ export function chain(a: DataProvider | undefined, b: DataProvider | undefined):
     }
 }
 
+
+export function forResourceAndFetchTypeF(resource: string, fetchType: string, dataProviderFunction: (DataProviderParams) => any): DataProvider {
+    return forResourceAndFetchType(resource, fetchType, (_: string, re: string, params: DataProviderParams) => {
+        return dataProviderFunction(params)
+    })
+}
+
 export function forResource(resource: string | string[], dataProvider: DataProvider): DataProvider {
     return forResourceAndFetchType(resource, undefined, dataProvider)
 }

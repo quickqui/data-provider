@@ -65,6 +65,12 @@ function chain(a, b) {
     };
 }
 exports.chain = chain;
+function forResourceAndFetchTypeF(resource, fetchType, dataProviderFunction) {
+    return forResourceAndFetchType(resource, fetchType, (_, re, params) => {
+        return dataProviderFunction(params);
+    });
+}
+exports.forResourceAndFetchTypeF = forResourceAndFetchTypeF;
 function forResource(resource, dataProvider) {
     return forResourceAndFetchType(resource, undefined, dataProvider);
 }
