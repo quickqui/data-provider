@@ -10,6 +10,7 @@ export declare type DataProviderParams = {
 export declare type DataProvider = (fetchType: string, resource: string, params: DataProviderParams) => Promise<any>;
 export declare function chain(a: DataProvider | undefined, b: DataProvider | undefined): DataProvider;
 export declare function forResource(resource: string | string[], dataProvider: DataProvider): DataProvider;
+export declare function forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined, dataProvider: DataProvider): DataProvider;
 /**
  * @deprecated 改了更明确的名字，使用{@link #withStaticData}
  * @param json

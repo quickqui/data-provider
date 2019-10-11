@@ -66,20 +66,28 @@ function chain(a, b) {
 }
 exports.chain = chain;
 function forResource(resource, dataProvider) {
-    return async (fetchType, re, params) => {
-        const ra = [resource].flat();
-        if (!ra.includes(re)) {
+    return forResourceAndFetchType(resource, undefined, dataProvider);
+}
+exports.forResource = forResource;
+function forResourceAndFetchType(resource, type, dataProvider) {
+    return (fetchType, re, params) => {
+        const ra = _([resource]).flatten().compact();
+        if (ra.length > 0 && !ra.includes(re)) {
             throw new NotCovered(`resource != ${resource}`);
         }
+        const types = _([type]).flatten().compact();
+        if (types.length > 0 && !types.includes(fetchType)) {
+            throw new NotCovered(`type != ${fetchType}`);
+        }
         try {
-            return await dataProvider(fetchType, re, params);
+            return dataProvider(fetchType, re, params);
         }
         catch (e) {
             throw e;
         }
     };
 }
-exports.forResource = forResource;
+exports.forResourceAndFetchType = forResourceAndFetchType;
 /**
  * @deprecated 改了更明确的名字，使用{@link #withStaticData}
  * @param json

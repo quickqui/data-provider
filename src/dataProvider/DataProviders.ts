@@ -60,15 +60,21 @@ export function chain(a: DataProvider | undefined, b: DataProvider | undefined):
     }
 }
 
-
 export function forResource(resource: string | string[], dataProvider: DataProvider): DataProvider {
-    return async (fetchType: string, re: string, params: DataProviderParams) => {
-        const ra: string[] = [resource].flat()
-        if (!ra.includes(re)) {
+    return forResourceAndFetchType(resource, undefined, dataProvider)
+}
+export function forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined, dataProvider: DataProvider): DataProvider {
+    return (fetchType: string, re: string, params: DataProviderParams) => {
+        const ra: string[] = _([resource]).flatten().compact()
+        if (ra.length > 0 && !ra.includes(re)) {
             throw new NotCovered(`resource != ${resource}`)
         }
+        const types: string[] = _([type]).flatten().compact()
+        if (types.length > 0 && !types.includes(fetchType)) {
+            throw new NotCovered(`type != ${fetchType}`)
+        }
         try {
-            return await dataProvider(fetchType, re, params)
+            return dataProvider(fetchType, re, params)
         } catch (e) {
             throw e
         }
@@ -79,7 +85,7 @@ export function forResource(resource: string | string[], dataProvider: DataProvi
  * @param json 
  */
 export function fake(json: any): DataProvider {
-    if(_.isFunction(json.then)){
+    if (_.isFunction(json.then)) {
         throw new Error('do not pass a promise in.')
     }
     return fakeDataProvider(json, logEnabled)
@@ -91,7 +97,7 @@ export function fake(json: any): DataProvider {
 export function fakeForFunction(jsonFun: () => any): DataProvider {
     return async (type: string, resource: string, params: DataProviderParams) => {
         const data = jsonFun()
-        if(_.isFunction(data.then)){
+        if (_.isFunction(data.then)) {
             throw new Error('do not pass a promise in.')
         }
         return fake(data)(type, resource, params)
@@ -118,10 +124,10 @@ export function asyncWrap(json: Promise<any>): DataProvider {
  * @description 包装静态数据
  * @param data 初始化数据
  */
-export function withStaticData(data:any): DataProvider {
-    if(_.isFunction(data)){
+export function withStaticData(data: any): DataProvider {
+    if (_.isFunction(data)) {
         return withStaticData(data())
-    }else{
+    } else {
         return fake(data)
     }
 }
@@ -129,11 +135,11 @@ export function withStaticData(data:any): DataProvider {
  * @description 每次调用都会重新加载数据
  * @param data 填充数据时调用的函数
  */
-export function withDynamicData(data:any): DataProvider {
-    if(_.isFunction(data)){
-        return  (type: string, resource: string, params: DataProviderParams) => {
+export function withDynamicData(data: any): DataProvider {
+    if (_.isFunction(data)) {
+        return (type: string, resource: string, params: DataProviderParams) => {
             const d = data()
-            if(isPromise(d)){
+            if (isPromise(d)) {
                 throw new Error('do not pass a promise in.')
             }
             return fake(d)(type, resource, params)
@@ -141,8 +147,8 @@ export function withDynamicData(data:any): DataProvider {
     }
     throw new Error('not implemented')
 }
-function isPromise(a:any){
-    return _.isFunction(a.then) 
+function isPromise(a: any) {
+    return _.isFunction(a.then)
 }
 
 
