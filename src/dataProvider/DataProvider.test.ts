@@ -5,7 +5,7 @@ import { chain, forResource } from './DataProviders';
 
 
 
-
+import "./Wrapper"
 
 
 const dataProvider = forResource("posts", fakeDataProvider({
@@ -22,6 +22,10 @@ const dataProvider2 = forResource(["comments"], fakeDataProvider({
     ],
 }))
 
+const dp3 = {comments: [
+    { id: 0, post_id: 0, author: 'John Doe', body: 'Sensational!' },
+    { id: 1, post_id: 0, author: 'Jane Doe', body: 'I agree' },
+]}.staticWrapToDataProvider().chain(dataProvider)
 
 
 

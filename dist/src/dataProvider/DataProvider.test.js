@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ra_data_fakerest_1 = __importDefault(require("ra-data-fakerest"));
 const dataFetchActions_1 = require("./dataFetchActions");
 const DataProviders_1 = require("./DataProviders");
+require("./Wrapper");
 const dataProvider = DataProviders_1.forResource("posts", ra_data_fakerest_1.default({
     posts: [
         { id: 0, title: 'Hello, world!' },
@@ -18,6 +19,10 @@ const dataProvider2 = DataProviders_1.forResource(["comments"], ra_data_fakerest
         { id: 1, post_id: 0, author: 'Jane Doe', body: 'I agree' },
     ],
 }));
+const dp3 = { comments: [
+        { id: 0, post_id: 0, author: 'John Doe', body: 'Sensational!' },
+        { id: 1, post_id: 0, author: 'Jane Doe', body: 'I agree' },
+    ] }.staticWrapToDataProvider().chain(dataProvider);
 test('data provider', async () => {
     const a = dataProvider;
     const data = await a(dataFetchActions_1.GET_ONE, "posts", { id: 1 });
