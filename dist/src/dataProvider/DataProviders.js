@@ -2,16 +2,9 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fake_data_1 = __importDefault(require("./fake-data"));
-const _ = __importStar(require("lodash"));
+const lodash_1 = __importDefault(require("lodash"));
 function log(type, resource, params, response) {
     if (!logEnabled)
         return;
@@ -77,11 +70,11 @@ function forResource(resource, dataProvider) {
 exports.forResource = forResource;
 function forResourceAndFetchType(resource, type, dataProvider) {
     return (fetchType, re, params) => {
-        const ra = _([resource]).flatten().compact();
+        const ra = lodash_1.default([resource]).flatten().compact().value();
         if (ra.length > 0 && !ra.includes(re)) {
             throw new NotCovered(`resource != ${resource}`);
         }
-        const types = _([type]).flatten().compact();
+        const types = lodash_1.default([type]).flatten().compact().value();
         if (types.length > 0 && !types.includes(fetchType)) {
             throw new NotCovered(`type != ${fetchType}`);
         }
@@ -99,7 +92,7 @@ exports.forResourceAndFetchType = forResourceAndFetchType;
  * @param json
  */
 function fake(json) {
-    if (_.isFunction(json.then)) {
+    if (lodash_1.default.isFunction(json.then)) {
         throw new Error('do not pass a promise in.');
     }
     return fake_data_1.default(json, logEnabled);
@@ -112,7 +105,7 @@ exports.fake = fake;
 function fakeForFunction(jsonFun) {
     return async (type, resource, params) => {
         const data = jsonFun();
-        if (_.isFunction(data.then)) {
+        if (lodash_1.default.isFunction(data.then)) {
             throw new Error('do not pass a promise in.');
         }
         return fake(data)(type, resource, params);
@@ -143,7 +136,7 @@ exports.asyncWrap = asyncWrap;
  * @param data 初始化数据
  */
 function withStaticData(data) {
-    if (_.isFunction(data)) {
+    if (lodash_1.default.isFunction(data)) {
         return withStaticData(data());
     }
     else {
@@ -156,7 +149,7 @@ exports.withStaticData = withStaticData;
  * @param data 填充数据时调用的函数
  */
 function withDynamicData(data) {
-    if (_.isFunction(data)) {
+    if (lodash_1.default.isFunction(data)) {
         return (type, resource, params) => {
             const d = data();
             if (isPromise(d)) {
@@ -169,6 +162,6 @@ function withDynamicData(data) {
 }
 exports.withDynamicData = withDynamicData;
 function isPromise(a) {
-    return _.isFunction(a.then);
+    return lodash_1.default.isFunction(a.then);
 }
 //# sourceMappingURL=DataProviders.js.map

@@ -1,5 +1,5 @@
 import fakeDataProvider from './fake-data';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 function log(type, resource, params, response) {
     if (!logEnabled) return
@@ -72,11 +72,11 @@ export function forResource(resource: string | string[], dataProvider: DataProvi
 }
 export function forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined, dataProvider: DataProvider): DataProvider {
     return (fetchType: string, re: string, params: DataProviderParams) => {
-        const ra: string[] = _([resource]).flatten().compact()
+        const ra: string[] = _([resource]).flatten().compact().value()
         if (ra.length > 0 && !ra.includes(re)) {
             throw new NotCovered(`resource != ${resource}`)
         }
-        const types: string[] = _([type]).flatten().compact()
+        const types: string[] = _([type]).flatten().compact().value()
         if (types.length > 0 && !types.includes(fetchType)) {
             throw new NotCovered(`type != ${fetchType}`)
         }
