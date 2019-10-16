@@ -11,6 +11,9 @@ class DataProviderWrap {
     chain(dp) {
         return new DataProviderWrap(DataProviders_1.chain(this._dp, dp));
     }
+    forResourceAndFetchType(resource, type) {
+        return new DataProviderWrap(DataProviders_1.forResourceAndFetchType(resource, type, this._dp));
+    }
 }
 const emptyDataProvider = (type, resource, param) => {
     throw new DataProviders_1.NotCovered('from emptyDataProvider');

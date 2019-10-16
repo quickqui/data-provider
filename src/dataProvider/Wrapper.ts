@@ -1,4 +1,4 @@
-import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered } from './DataProviders';
+import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf} from './DataProviders';
 interface Wrapper {
     value(): DataProvider
     chain(dp: DataProvider): Wrapper
@@ -13,6 +13,9 @@ class DataProviderWrap implements Wrapper {
     }
     chain(dp: DataProvider): Wrapper {
         return new DataProviderWrap(c(this._dp, dp))
+    }
+    forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined){
+        return new DataProviderWrap(raf(resource,type,this._dp))
     }
 }
 const emptyDataProvider: DataProvider = (type: string, resource: string, param: DataProviderParams) => {

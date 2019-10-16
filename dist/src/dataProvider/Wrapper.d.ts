@@ -8,6 +8,7 @@ declare class DataProviderWrap implements Wrapper {
     constructor(dataProvider: DataProvider);
     value(): DataProvider;
     chain(dp: DataProvider): Wrapper;
+    forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined): DataProviderWrap;
 }
 declare global {
     interface Object {
