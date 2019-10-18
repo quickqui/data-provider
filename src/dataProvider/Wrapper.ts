@@ -1,4 +1,5 @@
-import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf} from './DataProviders';
+import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf } from './DataProviders';
+import _ from 'lodash';
 interface Wrapper {
     value(): DataProvider
     chain(dp: DataProvider): Wrapper
@@ -11,11 +12,14 @@ class DataProviderWrap implements Wrapper {
     value(): DataProvider {
         return this._dp
     }
-    chain(dp: DataProvider): Wrapper {
+    chain(dp: DataProvider | DataProviderWrap): Wrapper {
+        if (dp instanceof DataProviderWrap) {
+            return new DataProviderWrap(c(this._dp, dp.value()))
+        }
         return new DataProviderWrap(c(this._dp, dp))
     }
-    forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined){
-        return new DataProviderWrap(raf(resource,type,this._dp))
+    forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined) {
+        return new DataProviderWrap(raf(resource, type, this._dp))
     }
 }
 const emptyDataProvider: DataProvider = (type: string, resource: string, param: DataProviderParams) => {
@@ -35,6 +39,6 @@ export function withDynamicData(fun: () => any): DataProviderWrap {
     return new DataProviderWrap(wdd(fun))
 }
 
-export function w(): DataProviderWrap {
-    return new DataProviderWrap(emptyDataProvider)
+export function w(dataProvider: DataProvider = emptyDataProvider): DataProviderWrap {
+    return new DataProviderWrap(dataProvider)
 }

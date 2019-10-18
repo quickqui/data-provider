@@ -162,6 +162,8 @@ function withDynamicData(data) {
 }
 exports.withDynamicData = withDynamicData;
 function isPromise(a) {
+    if (!a)
+        return false;
     return lodash_1.default.isFunction(a.then);
 }
 //# sourceMappingURL=DataProviders.js.map

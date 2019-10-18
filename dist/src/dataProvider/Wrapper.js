@@ -9,6 +9,9 @@ class DataProviderWrap {
         return this._dp;
     }
     chain(dp) {
+        if (dp instanceof DataProviderWrap) {
+            return new DataProviderWrap(DataProviders_1.chain(this._dp, dp.value()));
+        }
         return new DataProviderWrap(DataProviders_1.chain(this._dp, dp));
     }
     forResourceAndFetchType(resource, type) {
@@ -25,8 +28,8 @@ function withDynamicData(fun) {
     return new DataProviderWrap(DataProviders_1.withDynamicData(fun));
 }
 exports.withDynamicData = withDynamicData;
-function w() {
-    return new DataProviderWrap(emptyDataProvider);
+function w(dataProvider = emptyDataProvider) {
+    return new DataProviderWrap(dataProvider);
 }
 exports.w = w;
 //# sourceMappingURL=Wrapper.js.map

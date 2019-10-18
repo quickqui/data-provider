@@ -155,6 +155,7 @@ export function withDynamicData(data: any): DataProvider {
     throw new Error('not implemented')
 }
 function isPromise(a: any) {
+    if(!a) return false
     return _.isFunction(a.then)
 }
 

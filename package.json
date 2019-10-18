@@ -15,16 +15,16 @@
   "author": "nielinjie",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^24.0.19",
     "jest": "^24.9.0",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.3"
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
   },
   "dependencies": {
     "@types/lodash": "^4.14.144",
     "ra-data-fakerest": "^2.6.0",
-    "react": "^16.9.0",
-    "react-admin": "^2.9.6",
-    "react-dom": "^16.9.0"
+    "react": "^16.10.2",
+    "react-admin": "^2.9.7",
+    "react-dom": "^16.10.2"
   }
 }
