@@ -1,10 +1,7 @@
 import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf } from './DataProviders';
 import _ from 'lodash';
-interface Wrapper {
-    value(): DataProvider
-    chain(dp: DataProvider): Wrapper
-}
-class DataProviderWrap implements Wrapper {
+
+class DataProviderWrap implements DataProviderWrap {
     private _dp: DataProvider
     constructor(dataProvider: DataProvider) {
         this._dp = dataProvider
@@ -12,7 +9,7 @@ class DataProviderWrap implements Wrapper {
     value(): DataProvider {
         return this._dp
     }
-    chain(dp: DataProvider | DataProviderWrap): Wrapper {
+    chain(dp: DataProvider | DataProviderWrap): DataProviderWrap {
         if (dp instanceof DataProviderWrap) {
             return new DataProviderWrap(c(this._dp, dp.value()))
         }
@@ -28,7 +25,7 @@ const emptyDataProvider: DataProvider = (type: string, resource: string, param: 
 
 declare global {
     interface Object {
-        staticWrapToDataProvider(): Wrapper
+        staticWrapToDataProvider(): DataProviderWrap
     }
 }
 Object.prototype.staticWrapToDataProvider = function () {

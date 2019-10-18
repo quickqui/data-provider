@@ -1,18 +1,14 @@
 import { DataProvider } from './DataProviders';
-interface Wrapper {
-    value(): DataProvider;
-    chain(dp: DataProvider): Wrapper;
-}
-declare class DataProviderWrap implements Wrapper {
+declare class DataProviderWrap implements DataProviderWrap {
     private _dp;
     constructor(dataProvider: DataProvider);
     value(): DataProvider;
-    chain(dp: DataProvider | DataProviderWrap): Wrapper;
+    chain(dp: DataProvider | DataProviderWrap): DataProviderWrap;
     forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined): DataProviderWrap;
 }
 declare global {
     interface Object {
-        staticWrapToDataProvider(): Wrapper;
+        staticWrapToDataProvider(): DataProviderWrap;
     }
 }
 export declare function withDynamicData(fun: () => any): DataProviderWrap;
