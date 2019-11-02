@@ -1,4 +1,4 @@
-import { DataProvider, chain as c, withStaticData, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf } from './DataProviders';
+import { DataProvider, chain as c, withStaticData as wsd, withDynamicData as wdd, DataProviderParams, NotCovered, forResourceAndFetchType as raf } from './DataProviders';
 import _ from 'lodash';
 
 class DataProviderWrap implements DataProviderWrap {
@@ -23,19 +23,14 @@ const emptyDataProvider: DataProvider = (type: string, resource: string, param: 
     throw new NotCovered('from emptyDataProvider')
 }
 
-declare global {
-    interface Object {
-        staticWrapToDataProvider(): DataProviderWrap
-    }
-}
-Object.prototype.staticWrapToDataProvider = function () {
-    return new DataProviderWrap(withStaticData(this))
-}
+
 
 export function withDynamicData(fun: () => any): DataProviderWrap {
     return new DataProviderWrap(wdd(fun))
 }
-
+export function withStaticData(data:any):DataProviderWrap{
+    return new DataProviderWrap(wsd(data))
+}
 export function w(dataProvider: DataProvider = emptyDataProvider): DataProviderWrap {
     return new DataProviderWrap(dataProvider)
 }

@@ -3,15 +3,11 @@ import _ from 'lodash';
 
 function log(type, resource, params, response) {
     if (!logEnabled) return
-    if (console.group) {
-        // Better logging in Chrome
-        console.groupCollapsed(type, resource, JSON.stringify(params));
-        console.log(response);
-        console.groupEnd();
-    } else {
-        console.log('FakeRest request ', type, resource, params);
-        console.log('FakeRest response', response);
-    }
+    // Better logging in Chrome
+    console.groupCollapsed(type, resource, JSON.stringify(params));
+    console.log(response);
+    console.groupEnd();
+
 }
 
 export class NotCovered extends Error {
@@ -155,7 +151,7 @@ export function withDynamicData(data: any): DataProvider {
     throw new Error('not implemented')
 }
 function isPromise(a: any) {
-    if(!a) return false
+    if (!a) return false
     return _.isFunction(a.then)
 }
 
