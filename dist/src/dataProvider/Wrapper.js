@@ -21,13 +21,14 @@ class DataProviderWrap {
 const emptyDataProvider = (type, resource, param) => {
     throw new DataProviders_1.NotCovered('from emptyDataProvider');
 };
-Object.prototype.staticWrapToDataProvider = function () {
-    return new DataProviderWrap(DataProviders_1.withStaticData(this));
-};
 function withDynamicData(fun) {
     return new DataProviderWrap(DataProviders_1.withDynamicData(fun));
 }
 exports.withDynamicData = withDynamicData;
+function withStaticData(data) {
+    return new DataProviderWrap(DataProviders_1.withStaticData(data));
+}
+exports.withStaticData = withStaticData;
 function w(dataProvider = emptyDataProvider) {
     return new DataProviderWrap(dataProvider);
 }

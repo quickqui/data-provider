@@ -13,15 +13,10 @@ import {
 
 /* eslint-disable no-console */
 function log(type, resource, params, response) {
-    if (console.group) {
-        // Better logging in Chrome
-        console.groupCollapsed(type, resource, JSON.stringify(params));
-        console.log(response);
-        console.groupEnd();
-    } else {
-        console.log('FakeRest request ', type, resource, params);
-        console.log('FakeRest response', response);
-    }
+    // Better logging in Chrome
+    console.groupCollapsed(type, resource, JSON.stringify(params));
+    console.log(response);
+    console.groupEnd();
 }
 
 /**

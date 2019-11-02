@@ -7,16 +7,10 @@ const fakerest_1 = __importDefault(require("fakerest"));
 const dataFetchActions_1 = require("./dataFetchActions");
 /* eslint-disable no-console */
 function log(type, resource, params, response) {
-    if (console.group) {
-        // Better logging in Chrome
-        console.groupCollapsed(type, resource, JSON.stringify(params));
-        console.log(response);
-        console.groupEnd();
-    }
-    else {
-        console.log('FakeRest request ', type, resource, params);
-        console.log('FakeRest response', response);
-    }
+    // Better logging in Chrome
+    console.groupCollapsed(type, resource, JSON.stringify(params));
+    console.log(response);
+    console.groupEnd();
 }
 /**
  * Respond to react-admin data queries using a local JavaScript object

@@ -8,16 +8,10 @@ const lodash_1 = __importDefault(require("lodash"));
 function log(type, resource, params, response) {
     if (!logEnabled)
         return;
-    if (console.group) {
-        // Better logging in Chrome
-        console.groupCollapsed(type, resource, JSON.stringify(params));
-        console.log(response);
-        console.groupEnd();
-    }
-    else {
-        console.log('FakeRest request ', type, resource, params);
-        console.log('FakeRest response', response);
-    }
+    // Better logging in Chrome
+    console.groupCollapsed(type, resource, JSON.stringify(params));
+    console.log(response);
+    console.groupEnd();
 }
 class NotCovered extends Error {
     constructor(me) {

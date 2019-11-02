@@ -6,11 +6,7 @@ declare class DataProviderWrap implements DataProviderWrap {
     chain(dp: DataProvider | DataProviderWrap): DataProviderWrap;
     forResourceAndFetchType(resource: string | string[] | undefined, type: string | string[] | undefined): DataProviderWrap;
 }
-declare global {
-    interface Object {
-        staticWrapToDataProvider(): DataProviderWrap;
-    }
-}
 export declare function withDynamicData(fun: () => any): DataProviderWrap;
+export declare function withStaticData(data: any): DataProviderWrap;
 export declare function w(dataProvider?: DataProvider): DataProviderWrap;
 export {};
