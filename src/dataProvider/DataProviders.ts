@@ -57,7 +57,7 @@ export function chain(a: DataProvider | undefined, b: DataProvider | undefined):
 }
 
 
-export function forResourceAndFetchTypeF(resource: string, fetchType: string, dataProviderFunction: (DataProviderParams) => any): DataProvider {
+export function forResourceAndFetchTypeOneParam(resource: string, fetchType: string, dataProviderFunction: (DataProviderParams) => any): DataProvider {
     return forResourceAndFetchType(resource, fetchType, (_: string, re: string, params: DataProviderParams) => {
         return dataProviderFunction(params)
     })
@@ -83,6 +83,9 @@ export function forResourceAndFetchType(resource: string | string[] | undefined,
         }
     }
 }
+
+
+
 /**
  * @deprecated 改了更明确的名字，使用{@link #withStaticData}
  * @param json 

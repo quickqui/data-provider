@@ -52,12 +52,12 @@ function chain(a, b) {
     };
 }
 exports.chain = chain;
-function forResourceAndFetchTypeF(resource, fetchType, dataProviderFunction) {
+function forResourceAndFetchTypeOneParam(resource, fetchType, dataProviderFunction) {
     return forResourceAndFetchType(resource, fetchType, (_, re, params) => {
         return dataProviderFunction(params);
     });
 }
-exports.forResourceAndFetchTypeF = forResourceAndFetchTypeF;
+exports.forResourceAndFetchTypeOneParam = forResourceAndFetchTypeOneParam;
 function forResource(resource, dataProvider) {
     return forResourceAndFetchType(resource, undefined, dataProvider);
 }

@@ -5,7 +5,7 @@ export {
     DataProviderParams,
     DataProvider,
     chain,
-    forResourceAndFetchTypeF,
+    forResourceAndFetchTypeOneParam,
     forResource,
     forResourceAndFetchType,
     fakeForFunction,
@@ -16,6 +16,7 @@ export {
     withDynamicData,
     withStaticData,
     w,
+    w as dp
 } from "./Wrapper";
 export {
     GET_LIST,

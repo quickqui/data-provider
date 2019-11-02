@@ -34,3 +34,5 @@ export function withStaticData(data:any):DataProviderWrap{
 export function w(dataProvider: DataProvider = emptyDataProvider): DataProviderWrap {
     return new DataProviderWrap(dataProvider)
 }
+
+
