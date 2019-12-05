@@ -19,7 +19,7 @@ class DataProviderWrap implements DataProviderWrap {
         return new DataProviderWrap(raf(resource, type, this._dp))
     }
 }
-const emptyDataProvider: DataProvider = (type: string, resource: string, param: DataProviderParams) => {
+export const emptyDataProvider: DataProvider = (type: string, resource: string, param: DataProviderParams) => {
     throw new NotCovered('from emptyDataProvider')
 }
 
