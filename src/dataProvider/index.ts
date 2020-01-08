@@ -1,7 +1,6 @@
 
 export {
     NotCovered,
-    setLogEnabled,
     DataProviderParams,
     DataProvider,
     chain,

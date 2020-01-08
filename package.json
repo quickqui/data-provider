@@ -18,16 +18,20 @@
   "author": "nielinjie",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^24.0.19",
+    "@types/jest": "^24.0.25",
     "jest": "^24.9.0",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.4"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.144",
-    "ra-data-fakerest": "^2.6.0",
-    "react": "^16.10.2",
-    "react-admin": "^2.9.7",
-    "react-dom": "^16.10.2"
+    "@types/debug": "^4.1.5",
+    "@types/lodash": "^4.14.149",
+    "@types/node-fetch": "^2.5.4",
+    "@types/supports-color": "^5.3.0",
+    "debug": "^4.1.1",
+    "fakerest": "^2.1.0",
+    "node-fetch": "^2.6.0",
+    "query-string": "^6.9.0",
+    "supports-color": "^7.1.0"
   }
 }
