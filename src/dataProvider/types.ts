@@ -1,11 +1,11 @@
+import _ from "lodash";
+
 /**
  * data types
  */
 
 export type Identifier = string | number;
-export type Record<T> = Identifier & T
-
-
+export type Record<T> = Identifier & T;
 
 export interface Sort {
   field: string;
@@ -69,12 +69,28 @@ export interface UpdateManyResult {
 }
 
 export interface CreateParams<T> {
-  data: Exclude<T,'id'> ;
+  //TODO 如何从T得到一个Exclude<T,'id>？， t.delete? 不行。
+  data: Exclude<T, "id">;
+  // data:T
 }
 export interface CreateResult<T> {
   data: Record<T>;
 }
+function insureId<T>(result: { data: any }): { data: Record<T> } {
+  if (_.isNil(result.data.id)) {
+    return { data: { ...result.data, id: _.uniqueId() } };
+  } else {
+    return result as { data: Record<T> };
+  }
+}
 
+export function createResult(data: any) {
+  return insureId({ data });
+}
+
+// export function getListResult(list:any[],total:number){
+//   return {total:total,data:list.map(item=>}
+// }
 export interface DeleteParams {
   id: Identifier;
 }

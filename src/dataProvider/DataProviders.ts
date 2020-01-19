@@ -49,7 +49,7 @@ export type DataProviderParams<T> =
   | DeleteParams
   | UpdateManyParams<T>
   | CreateParams<T>
-  | DeleteManyParams;
+  | DeleteManyParams
 export type DataProviderResult<T> =
   | GetOneResult<T>
   | GetManyResult<T>
@@ -59,7 +59,7 @@ export type DataProviderResult<T> =
   | UpdateResult<T>
   | DeleteManyResult
   | DeleteResult<T>
-  | UpdateManyResult;
+  | UpdateManyResult
 
 
 //NOTE 类型参数暂不传播到dataprovider定义。
