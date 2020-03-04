@@ -15,7 +15,7 @@ export {
     withDynamicData,
     withStaticData,
     w,
-    w as dp
+    w as dp,localSFP
 } from "./Wrapper";
 export {
     GET_LIST,
