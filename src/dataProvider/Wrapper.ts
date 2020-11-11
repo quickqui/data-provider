@@ -7,7 +7,7 @@ import {
   NotCovered,
   forResourceAndFetchType as raf,
   DataProviderResult,
-  fake
+  fake,
 } from "./DataProviders";
 import _ from "lodash";
 import { GET_LIST } from "./dataFetchActions";
@@ -41,8 +41,11 @@ export const emptyDataProvider: DataProvider = (
   throw new NotCovered("from emptyDataProvider");
 };
 
-export function withDynamicData(fun: () => any): DataProviderWrap {
-  return new DataProviderWrap(wdd(fun));
+export function withDynamicData(
+  fun: () => any,
+  writeCallback?: Function
+): DataProviderWrap {
+  return new DataProviderWrap(wdd(fun, writeCallback));
 }
 export function withStaticData(data: any): DataProviderWrap {
   return new DataProviderWrap(wsd(data));
@@ -63,7 +66,7 @@ export function localSFP(raw: DataProvider): DataProvider {
       throw new Error("localSFP is only for GET_LIST");
     }
     const data = raw(fetchType, resource, params);
-    return data.then(result => {
+    return data.then((result) => {
       return fake({ [resource]: result.data })(fetchType, resource, params);
     });
   };

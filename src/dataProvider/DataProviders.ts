@@ -8,7 +8,7 @@ import {
   GetManyResult,
   UpdateResult,
   DeleteManyResult,
-  DeleteResult
+  DeleteResult,
 } from "./types";
 import {
   GetOneParams,
@@ -19,9 +19,16 @@ import {
   UpdateParams,
   DeleteParams,
   UpdateManyParams,
-  DeleteManyParams
+  DeleteManyParams,
 } from "./types";
 import { loggerResponse, logger } from "./logger";
+import {
+  DELETE_MANY,
+  CREATE,
+  UPDATE_MANY,
+  UPDATE,
+  DELETE,
+} from "./dataFetchActions";
 
 function log(type, resource, params, response) {
   logger(
@@ -49,7 +56,7 @@ export type DataProviderParams<T> =
   | DeleteParams
   | UpdateManyParams<T>
   | CreateParams<T>
-  | DeleteManyParams
+  | DeleteManyParams;
 export type DataProviderResult<T> =
   | GetOneResult<T>
   | GetManyResult<T>
@@ -59,8 +66,7 @@ export type DataProviderResult<T> =
   | UpdateResult<T>
   | DeleteManyResult
   | DeleteResult<T>
-  | UpdateManyResult
-
+  | UpdateManyResult;
 
 //NOTE 类型参数暂不传播到dataprovider定义。
 export type DataProvider = (
@@ -101,7 +107,10 @@ export function chain(
 export function forResourceAndFetchTypeOneParam<T>(
   resource: string,
   fetchType: string,
-  dataProviderFunction: (p:DataProviderParams<T>) => Promise<DataProviderResult<T>>
+  //fixme bug， 如果传入了一个async function， 它返回的是个Promise<DataProvider>， 而不是Promise<DataProviderResult>， 前端没有type checking？
+  dataProviderFunction: (
+    p: DataProviderParams<T>
+  ) => Promise<DataProviderResult<T>>
 ): DataProvider {
   return forResourceAndFetchType(
     resource,
@@ -119,36 +128,26 @@ export function forResource(
   return forResourceAndFetchType(resource, undefined, dataProvider);
 }
 export function forResourceAndFetchType<T>(
-         resource: string | string[] | undefined,
-         type: string | string[] | undefined,
-         dataProvider: DataProvider
-       ): DataProvider {
-         return (
-           fetchType: string,
-           re: string,
-           params: DataProviderParams<T>
-         ) => {
-           const ra: string[] = _([resource])
-             .flatten()
-             .compact()
-             .value();
-           if (ra.length > 0 && !ra.includes(re)) {
-             throw new NotCovered(`resource != ${resource}`);
-           }
-           const types: string[] = _([type])
-             .flatten()
-             .compact()
-             .value();
-           if (types.length > 0 && !types.includes(fetchType)) {
-             throw new NotCovered(`type != ${fetchType}`);
-           }
-           try {
-             return dataProvider(fetchType, re, params);
-           } catch (e) {
-             throw e;
-           }
-         };
-       }
+  resource: string | string[] | undefined,
+  type: string | string[] | undefined,
+  dataProvider: DataProvider
+): DataProvider {
+  return (fetchType: string, re: string, params: DataProviderParams<T>) => {
+    const ra: string[] = _([resource]).flatten().compact().value();
+    if (ra.length > 0 && !ra.includes(re)) {
+      throw new NotCovered(`resource != ${resource}`);
+    }
+    const types: string[] = _([type]).flatten().compact().value();
+    if (types.length > 0 && !types.includes(fetchType)) {
+      throw new NotCovered(`type != ${fetchType}`);
+    }
+    try {
+      return dataProvider(fetchType, re, params);
+    } catch (e) {
+      throw e;
+    }
+  };
+}
 
 /**
  * @deprecated 改了更明确的名字，使用{@link #withStaticData}
@@ -165,39 +164,39 @@ export function fake(json: any): DataProvider {
  * @param jsonFun
  */
 export function fakeForFunction<T>(jsonFun: () => any): DataProvider {
-         return async (
-           type: string,
-           resource: string,
-           params: DataProviderParams<T>
-         ) => {
-           const data = jsonFun();
-           if (_.isFunction(data.then)) {
-             throw new Error("do not pass a promise in.");
-           }
-           return fake(data)(type, resource, params);
-         };
-       }
+  return async (
+    type: string,
+    resource: string,
+    params: DataProviderParams<T>
+  ) => {
+    const data = jsonFun();
+    if (_.isFunction(data.then)) {
+      throw new Error("do not pass a promise in.");
+    }
+    return fake(data)(type, resource, params);
+  };
+}
 /**
  * @deprecated 外围自行处理Promise相关问题
  * @param json
  */
 export function wrap(json: Promise<any>): Promise<DataProvider> {
-  return json.then(_ => fake(_));
+  return json.then((_) => fake(_));
 }
 /**
  * @deprecated 外围自行处理Promise相关问题
  * @param json
  */
 export function asyncWrap<T>(json: Promise<any>): DataProvider {
-         return async (
-           type: string,
-           resource: string,
-           params: DataProviderParams<T>
-         ) => {
-           const data = await json;
-           return fake(data)(type, resource, params);
-         };
-       }
+  return async (
+    type: string,
+    resource: string,
+    params: DataProviderParams<T>
+  ) => {
+    const data = await json;
+    return fake(data)(type, resource, params);
+  };
+}
 /**
  * @description 包装静态数据
  * @param data 初始化数据
@@ -212,23 +211,26 @@ export function withStaticData(data: any): DataProvider {
 /**
  * @description 每次调用都会重新加载数据
  * @param data 填充数据时调用的函数
+ * @param writeCallback 当fetch type是写操作时，调用，以便数据源有机会更新。
  */
-export function withDynamicData<T>(data: any): DataProvider {
-         if (_.isFunction(data)) {
-           return (
-             type: string,
-             resource: string,
-             params: DataProviderParams<T>
-           ) => {
-             const d = data();
-             if (isPromise(d)) {
-               throw new Error("do not pass a promise in.");
-             }
-             return fake(d)(type, resource, params);
-           };
-         }
-         throw new Error("not implemented");
-       }
+export function withDynamicData<T>(
+  dataFunction: Function,
+  writeCallback?: Function
+): DataProvider {
+  if (_.isFunction(dataFunction)) {
+    return (type: string, resource: string, params: DataProviderParams<T>) => {
+      const d = dataFunction();
+      if (isPromise(d)) {
+        throw new Error("do not pass a promise in.");
+      }
+      const re = fake(d)(type, resource, params);
+      if ([UPDATE, CREATE, DELETE, DELETE_MANY, UPDATE_MANY].includes(type))
+        writeCallback?.(d);
+      return re;
+    };
+  }
+  throw new Error("not implemented, only data function implemented");
+}
 function isPromise(a: any) {
   if (!a) return false;
   return _.isFunction(a.then);
