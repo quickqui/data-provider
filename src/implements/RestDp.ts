@@ -9,12 +9,14 @@ import {
   CREATE,
   DELETE,
   UPDATE_MANY,
-  DELETE_MANY
+  DELETE_MANY,
 } from "../dataProvider/dataFetchActions";
 import {
   DataProvider,
-  DataProviderParams
+  DataProviderParams,
 } from "../dataProvider/DataProviders";
+
+import axios from "axios";
 class HttpError extends Error {
   constructor(
     public readonly message,
@@ -33,6 +35,37 @@ interface Options extends RequestInit {
     token?: string;
   };
 }
+
+export const axiosJson = (url, options: Options = {}) => {
+  const headers = {
+    ...(options.headers ?? {}),
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  return axios({ url, ...(options as object), headers })
+    .then((response) => ({
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      body: response.data,
+    }))
+    .then(({ status, statusText, headers, body }) => {
+      let json;
+      try {
+        json = body;
+      } catch (e) {
+        // not json, no big deal
+      }
+      if (status < 200 || status >= 300) {
+        return Promise.reject(
+          new HttpError((json && json.message) || statusText, status, json)
+        );
+      }
+      return Promise.resolve({ status, headers, body, json });
+    });
+};
+
 //TODO node-fetch 改成axios？ fetch在node与browser是否可以无缝兼容？
 export const fetchJson = (url, options: Options = {}) => {
   // const requestHeaders = (options.headers ||
@@ -52,16 +85,16 @@ export const fetchJson = (url, options: Options = {}) => {
   const headers = {
     ...(options.headers ?? {}),
     Accept: "application/json",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 
   return fetch(url, { ...options, headers })
-    .then(response =>
-      response.text().then(text => ({
+    .then((response) =>
+      response.text().then((text) => ({
         status: response.status,
         statusText: response.statusText,
         headers: response.headers,
-        body: text
+        body: text,
       }))
     )
     .then(({ status, statusText, headers, body }) => {
@@ -92,7 +125,10 @@ export const fetchJson = (url, options: Options = {}) => {
  * CREATE       => POST http://my.api.url/posts
  * DELETE       => DELETE http://my.api.url/posts/123
  */
-export const restDp = (apiUrl, httpClient = fetchJson)  => {
+export const restDp = (
+  apiUrl,
+  httpClient: (url: string, options?: object) => Promise<any> = axiosJson
+) => {
   /**
    * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
    * @param {String} resource Name of the resource to fetch, e.g. 'posts'
@@ -109,7 +145,7 @@ export const restDp = (apiUrl, httpClient = fetchJson)  => {
         const query = {
           sort: JSON.stringify([field, order]),
           range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-          filter: JSON.stringify(params.filter)
+          filter: JSON.stringify(params.filter),
         };
         url = `${apiUrl}/${resource}?${stringify(query)}`;
         break;
@@ -119,7 +155,7 @@ export const restDp = (apiUrl, httpClient = fetchJson)  => {
         break;
       case GET_MANY: {
         const query = {
-          filter: JSON.stringify({ id: params.ids })
+          filter: JSON.stringify({ id: params.ids }),
         };
         url = `${apiUrl}/${resource}?${stringify(query)}`;
         break;
@@ -132,8 +168,8 @@ export const restDp = (apiUrl, httpClient = fetchJson)  => {
           range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
           filter: JSON.stringify({
             ...params.filter,
-            [params.target]: params.id
-          })
+            [params.target]: params.id,
+          }),
         };
         url = `${apiUrl}/${resource}?${stringify(query)}`;
         break;
@@ -170,20 +206,15 @@ export const restDp = (apiUrl, httpClient = fetchJson)  => {
     switch (type) {
       case GET_LIST:
       case GET_MANY_REFERENCE:
-        if (!headers.has("content-range")) {
+        console.log("headers", headers);
+        if (!headers?.["content-range"]) {
           throw new Error(
             "The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?"
           );
         }
         return {
           data: json,
-          total: parseInt(
-            headers
-              .get("content-range")
-              .split("/")
-              .pop(),
-            10
-          )
+          total: parseInt(headers["content-range"].split("/").pop(), 10),
         };
       case CREATE:
         return { data: { ...params.data, id: json.id } };
@@ -202,31 +233,31 @@ export const restDp = (apiUrl, httpClient = fetchJson)  => {
     // simple-rest doesn't handle filters on UPDATE route, so we fallback to calling UPDATE n times instead
     if (type === UPDATE_MANY) {
       return Promise.all(
-        params.ids.map(id =>
+        params.ids.map((id) =>
           httpClient(`${apiUrl}/${resource}/${id}`, {
             method: "PUT",
-            body: JSON.stringify(params.data)
+            body: JSON.stringify(params.data),
           })
         )
-      ).then(responses => ({
-        data: responses.map((response: any) => response.json)
+      ).then((responses) => ({
+        data: responses.map((response: any) => response.json),
       }));
     }
     // simple-rest doesn't handle filters on DELETE route, so we fallback to calling DELETE n times instead
     if (type === DELETE_MANY) {
       return Promise.all(
-        params.ids.map(id =>
+        params.ids.map((id) =>
           httpClient(`${apiUrl}/${resource}/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
           })
         )
-      ).then(responses => ({
-        data: responses.map((response: any) => response.json)
+      ).then((responses) => ({
+        data: responses.map((response: any) => response.json),
       }));
     }
 
     const { url, options } = convertDataRequestToHTTP(type, resource, params);
-    return httpClient(url, options).then(response =>
+    return httpClient(url, options).then((response) =>
       convertHTTPResponse(response, type, resource, params)
     );
   };
