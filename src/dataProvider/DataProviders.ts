@@ -224,6 +224,7 @@ export function withDynamicData<T>(
         throw new Error("do not pass a promise in.");
       }
       const re = fake(d)(type, resource, params);
+      //TODO callback 传入的参数是原来的值，不是变化后的值？
       if ([UPDATE, CREATE, DELETE, DELETE_MANY, UPDATE_MANY].includes(type))
         writeCallback?.(d);
       return re;

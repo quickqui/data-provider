@@ -1,16 +1,15 @@
-import {
-  DataProvider,
-  chain as c,
-  withStaticData as wsd,
-  withDynamicData as wdd,
-  DataProviderParams,
-  NotCovered,
-  forResourceAndFetchType as raf,
-  DataProviderResult,
-  fake,
-} from "./DataProviders";
-import _ from "lodash";
 import { GET_LIST } from "./dataFetchActions";
+import {
+  chain as c, DataProvider,
+
+
+
+  DataProviderParams,
+
+
+  DataProviderResult,
+  fake, forResourceAndFetchType as raf, NotCovered, withDynamicData as wdd, withStaticData as wsd
+} from "./DataProviders";
 
 class DataProviderWrap implements DataProviderWrap {
   private _dp: DataProvider;
@@ -55,7 +54,7 @@ export function w(
 ): DataProviderWrap {
   return new DataProviderWrap(dataProvider);
 }
-
+//TODO 似乎相当简单粗暴啊。
 export function localSFP(raw: DataProvider): DataProvider {
   return (
     fetchType: string,
