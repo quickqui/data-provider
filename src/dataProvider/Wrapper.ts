@@ -1,14 +1,14 @@
 import { GET_LIST } from "./dataFetchActions";
 import {
-  chain as c, DataProvider,
-
-
-
+  chain as c,
+  DataProvider,
   DataProviderParams,
-
-
   DataProviderResult,
-  fake, forResourceAndFetchType as raf, NotCovered, withDynamicData as wdd, withStaticData as wsd
+  fake,
+  forResourceAndFetchType as raf,
+  NotCovered,
+  withDynamicData as wdd,
+  withStaticData as wsd,
 } from "./DataProviders";
 
 class DataProviderWrap implements DataProviderWrap {
@@ -40,11 +40,8 @@ export const emptyDataProvider: DataProvider = (
   throw new NotCovered("from emptyDataProvider");
 };
 
-export function withDynamicData(
-  fun: () => any,
-  writeCallback?: Function
-): DataProviderWrap {
-  return new DataProviderWrap(wdd(fun, writeCallback));
+export function withDynamicData(fun: () => any): DataProviderWrap {
+  return new DataProviderWrap(wdd(fun));
 }
 export function withStaticData(data: any): DataProviderWrap {
   return new DataProviderWrap(wsd(data));

@@ -8,7 +8,7 @@ import {
   UPDATE,
   UPDATE_MANY,
   DELETE,
-  DELETE_MANY
+  DELETE_MANY,
 } from "./dataFetchActions";
 import { DataProviderResult, DataProvider } from "./DataProviders";
 import { logger, loggerResponse } from "./logger";
@@ -56,24 +56,24 @@ export default (data): DataProvider => {
         const query = {
           sort: [field, order],
           range: [(page - 1) * perPage, page * perPage - 1],
-          filter: params.filter
+          filter: params.filter,
         };
         return {
           data: restServer.getAll(resource, query),
           total: restServer.getCount(resource, {
-            filter: params.filter
-          })
+            filter: params.filter,
+          }),
         };
       }
       case GET_ONE:
         return {
-          data: restServer.getOne(resource, params.id, { ...params })
+          data: restServer.getOne(resource, params.id, { ...params }),
         };
       case GET_MANY:
         return {
           data: restServer.getAll(resource, {
-            filter: { id: params.ids }
-          })
+            filter: { id: params.ids },
+          }),
         };
       case GET_MANY_REFERENCE: {
         const { page, perPage } = params.pagination;
@@ -81,36 +81,36 @@ export default (data): DataProvider => {
         const query = {
           sort: [field, order],
           range: [(page - 1) * perPage, page * perPage - 1],
-          filter: { ...params.filter, [params.target]: params.id }
+          filter: { ...params.filter, [params.target]: params.id },
         };
         return {
           data: restServer.getAll(resource, query),
           total: restServer.getCount(resource, {
-            filter: query.filter
-          })
+            filter: query.filter,
+          }),
         };
       }
       case UPDATE:
         return {
           data: restServer.updateOne(resource, params.id, {
-            ...params.data
-          })
+            ...params.data,
+          }),
         };
       case UPDATE_MANY:
-        params.ids.forEach(id =>
+        params.ids.forEach((id) =>
           restServer.updateOne(resource, id, {
-            ...params.data
+            ...params.data,
           })
         );
         return { data: params.ids };
       case CREATE:
         return {
-          data: restServer.addOne(resource, { ...params.data })
+          data: restServer.addOne(resource, { ...params.data }),
         };
       case DELETE:
         return { data: restServer.removeOne(resource, params.id) };
       case DELETE_MANY:
-        params.ids.forEach(id => restServer.removeOne(resource, id));
+        params.ids.forEach((id) => restServer.removeOne(resource, id));
         return { data: params.ids };
       default:
         return false;
@@ -124,6 +124,9 @@ export default (data): DataProvider => {
    * @returns {Promise} The response
    */
   return (type, resource, params): Promise<DataProviderResult<unknown>> => {
+    if ([UPDATE, CREATE, DELETE, DELETE_MANY, UPDATE_MANY].includes(type)) {
+      throw new Error("not writable dp, use json wrapper");
+    }
     const collection = restServer.getCollection(resource);
     if (!collection) {
       return new Promise((_, reject) =>
@@ -146,6 +149,8 @@ export default (data): DataProvider => {
       );
     }
     log(type, resource, params, response);
-    return new Promise(resolve => resolve(response as DataProviderResult<unknown>));
+    return new Promise((resolve) =>
+      resolve(response as DataProviderResult<unknown>)
+    );
   };
 };

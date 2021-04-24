@@ -12,7 +12,8 @@
     "declaration": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "allowSyntheticDefaultImports": true
     // "allowJs": true
   }
 }

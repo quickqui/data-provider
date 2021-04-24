@@ -205,6 +205,7 @@ export function withStaticData(data: any): DataProvider {
   if (_.isFunction(data)) {
     return withStaticData(data());
   } else {
+    
     return fake(data);
   }
 }
@@ -215,7 +216,6 @@ export function withStaticData(data: any): DataProvider {
  */
 export function withDynamicData<T>(
   dataFunction: Function,
-  writeCallback?: Function
 ): DataProvider {
   if (_.isFunction(dataFunction)) {
     return (type: string, resource: string, params: DataProviderParams<T>) => {
@@ -223,10 +223,14 @@ export function withDynamicData<T>(
       if (isPromise(d)) {
         throw new Error("do not pass a promise in.");
       }
-      const re = fake(d)(type, resource, params);
-      //TODO callback 传入的参数是原来的值，不是变化后的值？
-      if ([UPDATE, CREATE, DELETE, DELETE_MANY, UPDATE_MANY].includes(type))
-        writeCallback?.(d);
+            if (
+              [UPDATE, CREATE, DELETE, DELETE_MANY, UPDATE_MANY].includes(type)
+            ){
+              throw new Error("not writable dp, use json wrapper")
+            }
+              const re = fake(d)(type, resource, params);
+      //NOTE callback 传入的参数是传入的数据，如果是一个reference，则是被改动过的。
+      //   writeCallback?.(d);
       return re;
     };
   }
