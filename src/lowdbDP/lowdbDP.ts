@@ -30,8 +30,10 @@ export default function dpFromLowDB(wrapper: LowWrapper): DataProvider {
     const collection = db.defaults({ [resource]: [] }).get(resource);
 
     if (fetchType === GET_ONE) {
-      return collection.getById((params as GetOneParams).id).value();
+      const re = collection.getById((params as GetOneParams).id).value();
+      return re ? { data: re } : undefined;
     }
+
     if (fetchType === CREATE) {
       const re = collection.insert((params as CreateParams<any>).data).write();
       return { data: re };

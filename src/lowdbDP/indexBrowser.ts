@@ -7,16 +7,16 @@ import { SessionStorage } from "./SessionStorageAdapter";
 
 export function localStorageDp(source: string, initData: object = {}) {
   return dpFromLowDB(
-    new LowWrapper(initData, new LocalStorage(source, initData))
+    new LowWrapper(initData, new LocalStorage(source))
   );
 }
 export function sessionStorageDp(source: string, initData: object = {}) {
   return dpFromLowDB(
-    new LowWrapper(initData, new SessionStorage(source, initData))
+    new LowWrapper(initData, new SessionStorage(source))
   );
 }
 
 export function memoryDp(initData: object = {}) {
-  return dpFromLowDB(new LowWrapper(initData, new Memory("", initData)));
+  return dpFromLowDB(new LowWrapper(initData, new Memory("")));
 }
 

@@ -36,14 +36,14 @@ test.each(table())(
     const elsa = re.data.id;
     expect(elsa).toBeDefined();
     const getElsa = await dp(GET_ONE, "tests", { id: elsa });
-    expect(getElsa).toEqual(expect.objectContaining({ id: elsa }));
+    expect(getElsa.data).toEqual(expect.objectContaining({ id: elsa }));
     await dp(UPDATE, "tests", {
-      data: { ...getElsa, updated: true },
+      data: { ...getElsa.data, updated: true },
       id: (getElsa as any).id,
       previousData: getElsa,
     });
     const newElsa = await dp(GET_ONE, "tests", { id: elsa });
-    expect(newElsa).toEqual(
+    expect(newElsa.data).toEqual(
       expect.objectContaining({ id: elsa, updated: true })
     );
   }
