@@ -1,6 +1,6 @@
 {
   "name": "@quick-qui/data-provider",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "some utils for data-provider defined by react-admin",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
