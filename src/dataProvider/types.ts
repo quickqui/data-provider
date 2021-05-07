@@ -5,7 +5,7 @@ import _ from "lodash";
  */
 
 export type Identifier = string | number;
-export type Record<T> = Identifier & T;
+export type Record<T> = { id: Identifier } & T;
 export const ORDER_ASC = "ASC";
 export const ORDER_DES = "DES";
 export interface Sort {

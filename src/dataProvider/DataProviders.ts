@@ -107,7 +107,8 @@ export function chain(
 export function forResourceAndFetchTypeOneParam<T>(
   resource: string,
   fetchType: string,
-  //fixme bug， 如果传入了一个async function， 它返回的是个Promise<DataProvider>， 而不是Promise<DataProviderResult>， 前端没有type checking？
+  // ?? fixme bug， 如果传入了一个async function， 它返回的是个Promise<DataProvider>， 而不是Promise<DataProviderResult>， 前端没有type checking？
+  // 以上 bug  没有重现。见test 代码。
   dataProviderFunction: (
     p: DataProviderParams<T>
   ) => Promise<DataProviderResult<T>>
@@ -115,7 +116,7 @@ export function forResourceAndFetchTypeOneParam<T>(
   return forResourceAndFetchType(
     resource,
     fetchType,
-    (_: string, re: string, params: DataProviderParams<T>) => {
+    (__: string, re: string, params: DataProviderParams<T>) => {
       return dataProviderFunction(params);
     }
   );
