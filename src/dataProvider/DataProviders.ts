@@ -31,11 +31,11 @@ import {
 } from "./dataFetchActions";
 
 function log(type, resource, params, response) {
-  logger(
+  logger.debug(
     `type - ${type} resource - ${resource} params - ${JSON.stringify(params)}`
   );
 
-  loggerResponse(`response - ${JSON.stringify(response)}`);
+  loggerResponse.debug(`response - ${JSON.stringify(response)}`);
 }
 
 export class NotCovered extends Error {

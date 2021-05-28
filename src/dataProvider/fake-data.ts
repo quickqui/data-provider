@@ -1,4 +1,5 @@
 import FakeRest from "fakerest";
+import { NONE_SFP } from "..";
 import {
   GET_LIST,
   GET_ONE,
@@ -30,6 +31,7 @@ function log(type, resource, params, response) {
  *
  * @example
  * import fakeDataProvider from 'ra-data-fakerest';
+import { DEFAULT_SFP } from '../../.history/src/dataProvider/index_20210519161817';
  * const dataProvider = fakeDataProvider({
  *   posts: [
  *     { id: 0, title: 'Hello, world!' },
@@ -51,12 +53,12 @@ export default (data): DataProvider => {
   function getResponse(type, resource, params) {
     switch (type) {
       case GET_LIST: {
-        const { page, perPage } = params.pagination;
-        const { field, order } = params.sort;
+        const { page, perPage } = params.pagination ?? NONE_SFP.pagination;
+        const { field, order } = params.sort ?? NONE_SFP.sort;
         const query = {
           sort: [field, order],
           range: [(page - 1) * perPage, page * perPage - 1],
-          filter: params.filter,
+          filter: params.filter ?? NONE_SFP.filter,
         };
         return {
           data: restServer.getAll(resource, query),
