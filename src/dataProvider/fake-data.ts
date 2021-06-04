@@ -1,5 +1,5 @@
 import FakeRest from "fakerest";
-import { NONE_SFP } from "..";
+import { NONE_SFP }  from './index'
 import {
   GET_LIST,
   GET_ONE,
