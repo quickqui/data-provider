@@ -1,5 +1,4 @@
 import { stringify } from "query-string";
-import fetch, { RequestInit } from "node-fetch";
 import {
   GET_LIST,
   GET_ONE,
@@ -66,52 +65,7 @@ export const axiosJson = (url, options: Options = {}) => {
     });
 };
 
-//TODO node-fetch 改成axios？ fetch在node与browser是否可以无缝兼容？
-export const fetchJson = (url, options: Options = {}) => {
-  // const requestHeaders = (options.headers ||
-  //   new Headers({
-  //     Accept: "application/json"
-  //   })) as Headers;
-  // if (
-  //   !requestHeaders.has("Content-Type") &&
-  //   !(options && options.body && options.body instanceof FormData)
-  // ) {
-  //   requestHeaders.set("Content-Type", "application/json");
-  // }
-  // if (options.user && options.user.authenticated && options.user.token) {
-  //   requestHeaders.set("Authorization", options.user.token);
-  // }
 
-  const headers = {
-    ...(options.headers ?? {}),
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  };
-
-  return fetch(url, { ...options, headers })
-    .then((response) =>
-      response.text().then((text) => ({
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-        body: text,
-      }))
-    )
-    .then(({ status, statusText, headers, body }) => {
-      let json;
-      try {
-        json = JSON.parse(body);
-      } catch (e) {
-        // not json, no big deal
-      }
-      if (status < 200 || status >= 300) {
-        return Promise.reject(
-          new HttpError((json && json.message) || statusText, status, json)
-        );
-      }
-      return Promise.resolve({ status, headers, body, json });
-    });
-};
 /**
  * Maps react-admin queries to a simple REST API
  *

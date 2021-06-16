@@ -1,4 +1,5 @@
-import fakeDataProvider from "./fake-data";
+// import fakeDataProvider from "./fake-data";
+import objectProvider from './objectProvider'
 import _ from "lodash";
 import {
   GetListResult,
@@ -158,7 +159,7 @@ export function fake(json: any): DataProvider {
   if (_.isFunction(json.then)) {
     throw new Error("do not pass a promise in.");
   }
-  return fakeDataProvider(json);
+  return objectProvider(json);
 }
 /**
  * @deprecated 改了更明确的名字，使用{@link #withDynamicData}
