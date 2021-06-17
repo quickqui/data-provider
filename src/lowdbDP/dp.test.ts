@@ -63,6 +63,23 @@ test.each(table())("%s  add and find", async (name, dp: DataProvider) => {
     ])
   );
 });
+test.each(table())("%s  add and get list", async (name, dp: DataProvider) => {
+  expect.hasAssertions();
+  const getOne = await dp(GET_ONE, "tests", { id: 1 });
+  expect(getOne).toBeUndefined();
+  const re = await dp(CREATE, "tests", { data: { name: "elsa" } });
+  const re2 = await dp(CREATE, "tests", { data: { name: "elsa" } });
+  const find = await dp(GET_LIST, "tests", {
+    filter: { name: "elsa" },
+    pagination: { page: 1, perPage: 1 },
+  } as GetListParams);
+  expect(find.data).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ name: "elsa", id: (re as any).data.id }),
+    ])
+  );
+  expect(find).toEqual(expect.objectContaining({total:2}))
+});
 test.each(table())("%s  delete", async (_, dp: DataProvider) => {
   expect.hasAssertions();
   const getOne = await dp(GET_ONE, "tests", { id: 1 });
