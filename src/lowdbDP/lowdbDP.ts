@@ -25,9 +25,12 @@ import {
   UpdateManyParams,
   DeleteManyParams,
 } from "../dataProvider/types";
+import low from "lowdb";
 
-export default function dpFromLowDB(wrapper: LowWrapper): DataProvider {
-  const db = wrapper.db;
+export function dpFromLowDB(wrapper: LowWrapper): DataProvider {
+  return dpFromDB(wrapper.db);
+}
+export function dpFromDB(db: low.LowdbSync<any>): DataProvider {
   return (fetchType, resource, params) => {
     const collection = db.defaults({ [resource]: [] }).get(resource);
 
@@ -68,10 +71,8 @@ export default function dpFromLowDB(wrapper: LowWrapper): DataProvider {
           return { total: t.length, data: re };
         }
       }
-      const t = collection
-        .filter(filter)
-        .value();
-      const re = _.drop(t,offset).slice(0, pgSize);
+      const t = collection.filter(filter).value();
+      const re = _.drop(t, offset).slice(0, pgSize);
       return { total: t.length, data: re };
     }
     if (fetchType === DELETE) {
@@ -122,3 +123,5 @@ export default function dpFromLowDB(wrapper: LowWrapper): DataProvider {
     throw new Error("not supported - " + fetchType);
   };
 }
+
+export default dpFromLowDB
