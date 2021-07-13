@@ -57,7 +57,7 @@ export function dpFromDB(db: low.LowdbSync<any>): DataProvider {
       const pgSize = perPage;
       const offset = (pg - 1) * pgSize;
       if (sort) {
-        if ((sort.order = ORDER_ASC)) {
+        if ((sort.order === ORDER_ASC)) {
           const t = collection.filter(filter).sortBy(sort.field).value();
           const re = _.drop(t, offset).slice(0, pgSize);
           return { total: t.length, data: re };
@@ -87,7 +87,7 @@ export function dpFromDB(db: low.LowdbSync<any>): DataProvider {
       }
       const newFilter = { ...filter, [target]: id };
       if (sort) {
-        if ((sort.order = ORDER_ASC)) {
+        if ((sort.order === ORDER_ASC)) {
           const re = collection.filter(newFilter).sortBy(sort.field).value();
           return { total: re.length, data: re };
         } else {
